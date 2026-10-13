@@ -2,10 +2,29 @@
 _*
 .*
 exp_result/
-config/
-models/
 depreciated/
+copy
+project_files.txt
+
+# Large audio datasets and cache archives
+LA.zip
 LA/
+LA2021/
+LA2021_keys/
+feature_cache/
+feature_cache_backup_bad/
+feature_cache_indic/
+feature_cache_indic_smoke/
+indic_data/
+indic_data_smoke/
+degraded_audio/
+feature_branch_tests/
+ablation/
+ablation_v2/
+explainability_output/
+*.flac
+*.wav
+*.npz
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

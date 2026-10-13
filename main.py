@@ -279,7 +279,7 @@ def get_loader(
                               is_eval=True)
     eval_set = Dataset_ASVspoof2019_devNeval(list_IDs=file_eval,
                                              base_dir=eval_database_path)
-    eval_loader = DataLoader(eval_set,
+    eval_loader = DataLoader(eval_set, num_workers=4,
                              batch_size=config["batch_size"],
                              shuffle=False,
                              drop_last=False,

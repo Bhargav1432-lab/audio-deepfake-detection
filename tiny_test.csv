@@ -1,0 +1,6 @@
+filename,filepath,label,split
+LA_T_1138215,LA\ASVspoof2019_LA_train\flac\LA_T_1138215.flac,bonafide,train
+LA_T_1271820,LA\ASVspoof2019_LA_train\flac\LA_T_1271820.flac,bonafide,train
+LA_T_1272637,LA\ASVspoof2019_LA_train\flac\LA_T_1272637.flac,bonafide,train
+LA_T_1004644,LA\ASVspoof2019_LA_train\flac\LA_T_1004644.flac,spoof,train
+LA_T_1056709,LA\ASVspoof2019_LA_train\flac\LA_T_1056709.flac,spoof,train
