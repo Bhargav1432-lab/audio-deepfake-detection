@@ -40,9 +40,9 @@ def analyze_audio(audio_path, model_path=DEFAULT_MODEL_WEIGHTS, device=None, che
 
     # 1. Feature Extraction
     t0 = time.time()
-    feats = extract_all_features(audio_path, fast_prosody=True)
+    feats = extract_all_features(audio_path, fast_prosody=False)
     t_feat = time.time() - t0
-    print(f"[*] Fast Feature Extraction completed in {t_feat:.2f}s")
+    print(f"[*] Feature Extraction completed in {t_feat:.2f}s")
 
     # Format tensors for batch dimension (1, ...)
     batch = {

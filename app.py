@@ -163,10 +163,10 @@ with tab1:
         else:
             # Pre-loaded benchmark samples
             sample_options = {
-                "Sample 1: LA_E_5656373 (Cellular A-law Channel)": "LA2021/flac/LA_E_5656373.flac",
-                "Sample 2: LA_E_1000048 (Benchmark FLAC)": "LA2021/flac/LA_E_1000048.flac",
-                "Sample 3: LA_E_1000166 (Benchmark FLAC)": "LA2021/flac/LA_E_1000166.flac",
-                "Sample 4: LA_E_1000200 (Benchmark FLAC)": "LA2021/flac/LA_E_1000200.flac",
+                "Sample 1 [REAL Human Voice]: LA_E_5656373 (Cellular A-law)": "LA2021/flac/LA_E_5656373.flac",
+                "Sample 2 [AI DEEPFAKE Voice]: LA_E_9332881 (Synthetic Spoof)": "LA2021/flac/LA_E_9332881.flac",
+                "Sample 3 [REAL Human Voice]: LA_E_9847998 (Cellular Telecom)": "LA2021/flac/LA_E_9847998.flac",
+                "Sample 4 [AI DEEPFAKE Voice]: LA_E_6866159 (Synthetic Spoof)": "LA2021/flac/LA_E_6866159.flac",
             }
             available_samples = {k: v for k, v in sample_options.items() if os.path.exists(v)}
             if available_samples:
@@ -189,8 +189,8 @@ with tab1:
         if st.button("🚀 Run Forensic Deepfake Analysis", type="primary", use_container_width=True):
             with st.spinner("Extracting multi-view representations and evaluating reliability gate..."):
                 t0 = time.time()
-                # 1. Feature extraction
-                feats = extract_all_features(audio_path_to_process, fast_prosody=True)
+                # 1. Feature extraction (exact matching trained feature distributions)
+                feats = extract_all_features(audio_path_to_process, fast_prosody=False)
                 extract_time = time.time() - t0
 
                 # 2. Format tensor

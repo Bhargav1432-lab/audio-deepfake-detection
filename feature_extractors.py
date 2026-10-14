@@ -86,10 +86,10 @@ def extract_residual(audio):
             continue
         try:
             lpc_coeffs = librosa.lpc(frame, order=LPC_ORDER)
-            # Vectorized FIR inverse filter: e[n] = s[n] + sum(a[k]*s[n-k])
-            # Runs in microsecond C time via scipy.signal.lfilter
-            res_frame = scipy.signal.lfilter(lpc_coeffs, [1.0], frame)
-            residual[start:end] += res_frame
+            predicted = np.zeros_like(frame)
+            for n in range(LPC_ORDER, len(frame)):
+                predicted[n] = -np.sum(lpc_coeffs[1:] * frame[n - LPC_ORDER:n][::-1])
+            residual[start:end] += (frame - predicted)
         except Exception:
             continue
 
@@ -102,35 +102,19 @@ def extract_residual(audio):
     return residual_db.astype(np.float32)  # shape: (1025, 126)
 
 
-def extract_prosody(audio, fast=True):
+def extract_prosody(audio, fast=False):
     """
-    Extracts F0, RMS energy, and Voiced probability.
-    When fast=True (default), uses torchaudio.functional.detect_pitch_frequency (~0.18s),
-    achieving a ~100x speedup compared to librosa.pyin (~20s).
+    Extracts F0, RMS energy, and Voiced probability using librosa.pyin,
+    matching the exact distribution the model weights were trained on.
     """
-    if fast and HAVE_TORCHAUDIO:
-        torch_audio = torch.from_numpy(audio).float()
-        # Fast GPU/CPU pitch tracker
-        f0_t = torchaudio.functional.detect_pitch_frequency(
-            torch_audio,
-            sample_rate=SR,
-            frame_time=0.032,
-            win_length=30,
-            freq_low=65,
-            freq_high=2093
-        )
-        f0 = f0_t.cpu().numpy()
-        f0_clean = np.nan_to_num(f0, nan=0.0)
-        voiced_flag_numeric = (f0_clean > 0.0).astype(np.float32)
-    else:
-        f0, voiced_flag, _ = librosa.pyin(
-            audio, sr=SR,
-            fmin=librosa.note_to_hz("C2"),
-            fmax=librosa.note_to_hz("C7"),
-        )
-        f0_clean = np.nan_to_num(f0, nan=0.0)
-        voiced_flag_numeric = voiced_flag.astype(np.float32)
-
+    f0, voiced_flag, _ = librosa.pyin(
+        audio, sr=SR,
+        fmin=librosa.note_to_hz("C2"),
+        fmax=librosa.note_to_hz("C7"),
+    )
+    f0_clean = np.nan_to_num(f0, nan=0.0)
+    voiced_flag_numeric = (voiced_flag.astype(np.float32) if voiced_flag is not None 
+                           else (f0_clean > 0.0).astype(np.float32))
     rms = librosa.feature.rms(y=audio)[0]
 
     # fixed-length 1D vectors
