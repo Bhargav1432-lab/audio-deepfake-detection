@@ -16,6 +16,9 @@ Run using:
     streamlit run app.py
 """
 
+import warnings
+warnings.filterwarnings("ignore")
+
 import os
 import tempfile
 import time

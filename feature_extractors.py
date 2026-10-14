@@ -9,15 +9,13 @@ Each function takes a raw audio waveform (1D numpy array) and returns a
 FIXED-SIZE numpy array, so it can be batched by PyTorch's DataLoader.
 """
 
+import warnings
+warnings.filterwarnings("ignore")
+
 import numpy as np
 import librosa
 import scipy.signal
 import torch
-try:
-    import torchaudio
-    HAVE_TORCHAUDIO = True
-except ImportError:
-    HAVE_TORCHAUDIO = False
 
 # ---------------- CONFIG ----------------
 SR = 16000
@@ -128,7 +126,7 @@ def extract_prosody(audio, fast=False):
     return prosody_features.astype(np.float32)
 
 
-def extract_all_features(filepath, fast_prosody=True):
+def extract_all_features(filepath, fast_prosody=False):
     """
     Loads audio and extracts all 4 branches for one file.
     Returns a dict of numpy arrays, ready to be converted to tensors.
@@ -141,7 +139,9 @@ def extract_all_features(filepath, fast_prosody=True):
         if sr != SR:
             audio = librosa.resample(audio.astype(np.float32), orig_sr=sr, target_sr=SR)
     except Exception:
-        audio, sr = librosa.load(filepath, sr=SR)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            audio, sr = librosa.load(filepath, sr=SR)
     
     audio = pad_or_trim_audio(audio)
 
